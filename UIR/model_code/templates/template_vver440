@@ -1,0 +1,98 @@
+set title "vver-440"
+
+pin 1
+void pin1_void1
+fuel pin1_fuel
+void pin1_void1
+clad pin1_clad
+water
+
+pin 2
+termfuel pin2_termfuel
+clad pin2_clad
+water
+
+pin 3
+water
+
+lat 10 2 0.0 0.0 15 15 1.23
+
+3 3 3 3 3 3 3 3 3 3 3 3 3 3 3
+3 3 3 3 3 3 3 1 1 1 1 1 1 1 3
+3 3 3 3 3 3 1 1 1 1 1 1 1 1 3
+3 3 3 3 3 1 1 1 1 1 1 1 1 1 3
+3 3 3 3 1 1 1 1 1 1 1 1 1 1 3
+3 3 3 1 1 1 1 1 1 1 1 1 1 1 3
+3 3 1 1 1 1 1 1 1 1 1 1 1 1 3
+3 1 1 1 1 1 1 2 1 1 1 1 1 1 3
+3 1 1 1 1 1 1 1 1 1 1 1 1 3 3
+3 1 1 1 1 1 1 1 1 1 1 1 3 3 3
+3 1 1 1 1 1 1 1 1 1 1 3 3 3 3
+3 1 1 1 1 1 1 1 1 1 3 3 3 3 3
+3 1 1 1 1 1 1 1 1 3 3 3 3 3 3
+3 1 1 1 1 1 1 1 3 3 3 3 3 3 3
+3 3 3 3 3 3 3 3 3 3 3 3 3 3 3
+
+surf zone1 hexyc zone1_x zone1_y zone1_d
+surf zone2 hexyc zone2_x zone2_y zone2_d
+surf zone3 hexyc zone3_x zone3_y zone3_d
+surf zone4 hexyc zone4_x zone4_y zone4_d
+
+cell cell1 100 fill 10 zone1 -zone2
+cell cell2 101 fill 2 -zone1
+cell cell1d 0 fill 100 zone1 -zone2
+cell cell2d 0 fill 101 -zone1
+
+cell cell3 0 tube zone2 -zone3
+cell cell4 0 water zone3 -zone4
+cell cell5 0 outside zone4
+
+mat fuel -10.45700 vol 1 tmp tmp_fuel
+92235.03c -0.03173
+92238.03c -0.84977
+8016.03c -0.11850
+
+mat termfuel -0.0001 vol 1 tmp tmp_termfuel
+1002.03c -0.33
+1003.03c -0.33
+2003.03c -0.34
+
+mat clad -6.55000 vol 1 tmp tmp_clad
+40000.03c -0.99000
+41093.03c -0.01000
+
+mat tube -6.58000 vol 1 tmp tmp_tube
+40000.03c -0.97500
+41093.03c -0.02500
+
+mat water -0.7207 moder lwtr 1001 vol 1 tmp 800
+1001.06c 2.0
+8016.06c 1.0
+
+therm lwtr lwj3.11t
+
+set acelib "/home/SHARED/Serpent/xsdata/ENDFB7/sss_endfb7.xsdata"
+set declib "/home/SHARED/Serpent/xsdata/ENDFB7/sss_endfb7.dec"
+set nfylib "/home/SHARED/Serpent/xsdata/ENDFB7/sss_endfb7.nfy"
+set bc 3
+set pop 2000 500 20
+
+% ----GROUP CONSTANT GENERATION--------------------------------------
+
+set gcu 100 101
+set nfg 2
+set mcvol 10000
+set mdep 101 1 1 termfuel 10020 102 10020 103 10030 102 10030 103 20030 102 20030 103
+set mdep 100 1 1 fuel 922350 102 922350 18 922380 102 922380 18
+set mdep 100 1 1 clad 922350 102 922350 18 922380 102 922380 18
+set mdep 100 1 1 water 92235 102 922350 18 922380 102 922380 18
+
+% ----SPECTR---------------------------------------------------------
+
+ene eg1 1 0. 0.625E-6 20
+det spectr_cell1
+de eg1
+dc cell1d
+det spectr_cell2
+de eg1
+dc cell2d

@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page %}
+    {% block content %}
+
+        <h1>Home page</h1>
+
+        <style>
+            .outline {
+                border: 1px solid black;
+                padding: 10px;
+                font-style: italic;
+                background-color: wheat;
+            }
+        </style>
+        <p>Web application for setting parameters in the input file generation template.
+            <br>
+            Created to exclude working with the console
+            <br>
+            <br>
+            The input file template is shown below. You can set:
+            <br>
+            <a href="http://127.0.0.1:8000/temperature">1) the temperature of the materials;</a>
+            <br>
+            <a href="http://127.0.0.1:8000/pins">2) the size of the materials in the pin;</a>
+            <br>
+            <a href="http://127.0.0.1:8000/zones">3) the dimensions (x0, y0, d) of the surface;</a>
+            <br>
+        <details>
+            <summary>More information</summary>
+            <p>
+                <a href="https://serpent.vtt.fi/mediawiki/index.php/Input_syntax_manual#pin_.28pin_geometry_definition.29">Pin (geometry definition)</a>
+                <br>
+                <a href="https://serpent.vtt.fi/mediawiki/index.php/Input_syntax_manual#mat_tmp">Material temperature</a>
+                <br>
+                <a href="https://serpent.vtt.fi/mediawiki/index.php/Doppler-broadening_preprocessor_routine">Doppler-broadening preprocessor routine</a>
+                <br>
+                <a href="https://serpent.vtt.fi/mediawiki/index.php/Surface_types">Surface types</a>
+            </p>
+        </details>
+        <h1>Template</h1>
+        <div class="outline">
+            <p>
+                <span style="color:purple;">% --- VVER-440 Assembly --------------------------------------</span>
+                <br>
+                set title "vver-440"
+                <br>
+                <br>
+                <span style="color:purple;">% --- Fuel pin with central hole:</span>
+                <br>
+                pin 1
+                <br>
+                void <span style="color:blue;">Enter radius for PIN1 void</span>
+                <br>
+                fuel <span style="color:blue;">Enter radius for PIN1 fuel</span>
+                <br>
+                void <span style="color:blue;">Enter radius for PIN1 void</span>
+                <br>
+                clad <span style="color:blue;">Enter radius for PIN1 clad</span>
+                <br>
+                water
+                <br>
+                <br>
+                <span style="color:purple;">% --- Central tube with termfuel:</span>
+                <br>
+                pin 2
+                <br>
+                termfuel <span style="color:blue;">Enter radius for PIN2 termfuel</span>
+                <br>
+                clad <span style="color:blue;">Enter radius for PIN2 clad</span>
+                <br>
+                water
+                <br>
+                <br>
+                <span style="color:purple;">% --- Empty lattice position:</span>
+                <br>
+                pin 3
+                <br>
+                water
+                <br>
+                <br>
+                <span style="color:purple;">% --- Lattice (type = 2, pin pitch = 1.23 cm):</span>
+                <br>
+                lat 10 2 0.0 0.0 15 15 1.23
+                <br>
+                <br>
+                3 3 3 3 3 3 3 3 3 3 3 3 3 3 3
+                <br>
+                3 3 3 3 3 3 3 1 1 1 1 1 1 1 3
+                <br>
+                3 3 3 3 3 3 1 1 1 1 1 1 1 1 3
+                <br>
+                3 3 3 3 3 1 1 1 1 1 1 1 1 1 3
+                <br>
+                3 3 3 3 1 1 1 1 1 1 1 1 1 1 3
+                <br>
+                3 3 3 1 1 1 1 1 1 1 1 1 1 1 3
+                <br>
+                3 3 1 1 1 1 1 1 1 1 1 1 1 1 3
+                <br>
+                3 1 1 1 1 1 1 2 1 1 1 1 1 1 3
+                <br>
+                3 1 1 1 1 1 1 1 1 1 1 1 1 3 3
+                <br>
+                3 1 1 1 1 1 1 1 1 1 1 1 3 3 3
+                <br>
+                3 1 1 1 1 1 1 1 1 1 1 3 3 3 3
+                <br>
+                3 1 1 1 1 1 1 1 1 1 3 3 3 3 3
+                <br>
+                3 1 1 1 1 1 1 1 1 3 3 3 3 3 3
+                <br>
+                3 1 1 1 1 1 1 1 3 3 3 3 3 3 3
+                <br>
+                3 3 3 3 3 3 3 3 3 3 3 3 3 3 3
+                <br>
+                <br>
+                <span style="color:purple;">% --- Surfaces (assembly pitch = 14.7 cm):</span>
+                <br>
+                surf zone1 hexyc <span style="color:green;">Enter zone1 x0, y0, d</span>
+                <br>
+                surf zone2 hexyc <span style="color:green;">Enter zone2 x0, y0, d</span>
+                <br>
+                surf zone3 hexyc <span style="color:green;">Enter zone3 x0, y0, d</span>
+                <br>
+                surf zone4 hexyc <span style="color:green;">Enter zone4 x0, y0, d</span>
+                <br>
+                <br>
+                <span style="color:purple;">% --- Cells:</span>
+                <br>
+                cell cell1 100 fill 10 zone1 -zone2
+                <br>
+                cell cell2 101 fill 2 -zone1
+                <br>
+                cell cell1d 0 fill 100 zone1 -zone2
+                <br>
+                cell cell2d 0 fill 101 -zone1
+                <br>
+                <br>
+                cell cell3 0 tube zone2 -zone3
+                <br>
+                cell cell4 0 water zone3 -zone4
+                <br>
+                cell cell5 0 outside zone4
+                <br>
+                <br>
+                <span style="color:purple;">% --- UO2 fuel</span>
+                <br>
+                mat fuel -10.45700 vol 1 tmp <span style="color:blueviolet;">Enter fuel temperature</span>
+                <br>
+                92235.03c -0.03173
+                <br>
+                92238.03c -0.84977
+                <br>
+                8016.03c -0.11850
+                <br>
+                <br>
+                <span style="color:purple;">% --- termfuel</span>
+                <br>
+                mat termfuel -0.0001 vol 1 tmp <span style="color:blueviolet;">Enter termfuel temperature</span>
+                <br>
+                1002.03c -0.33
+                <br>
+                1003.03c -0.33
+                <br>
+                2003.03c -0.34
+                <br>
+                <br>
+                <span style="color:purple;">% --- Zr-Nb cladding and shroud tube:</span>
+                <br>
+                mat clad -6.55000 vol 1 tmp <span style="color:blueviolet;">Enter clad temperature</span>
+                <br>
+                40000.03c -0.99000
+                <br>
+                41093.03c -0.01000
+                <br>
+                <br>
+                mat tube -6.58000 vol 1 tmp <span style="color:blueviolet;">Enter tube temperature</span>
+                <br>
+                40000.03c -0.97500
+                <br>
+                41093.03c -0.02500
+                <br>
+                <br>
+                <span style="color:purple;">% --- Water:</span>
+                <br>
+                mat water -0.7207 moder lwtr 1001 vol 1 tmp 800
+                <br>
+                1001.06c 2.0
+                <br>
+                8016.06c 1.0
+                <br>
+                <br>
+                <span style="color:purple;">% --- Thermal scattering data for light water:</span>
+                <br>
+                therm lwtr lwj3.11t
+                <br>
+                <br>
+                <span style="color:purple;">% --- Cross section library file path:</span>
+                <br>
+                set acelib "/home/SHARED/Serpent/xsdata/ENDFB7/sss_endfb7.xsdata"
+                <br>
+                set declib "/home/SHARED/Serpent/xsdata/ENDFB7/sss_endfb7.dec"
+                <br>
+                set nfylib "/home/SHARED/Serpent/xsdata/ENDFB7/sss_endfb7.nfy"
+                <br>
+                <span style="color:purple;">% --- Periodic boundary condition:</span>
+                <br>
+                set bc 3
+                <br>
+                <span style="color:purple;">% --- Neutron population and criticality cycles:</span>
+                <br>
+                set pop 2000 500 20
+                <br>
+                <br>
+                <span style="color:purple;">% ----GROUP CONSTANT GENERATION--------------------------------------</span>
+                <br>
+                <br>
+                set gcu 100 101
+                <br>
+                set nfg 2
+                <br>
+                set mcvol 10000
+                <br>
+                set mdep 101 1 1 termfuel 10020 102 10020 103 10030 102 10030 103 20030 102 20030 103
+                <br>
+                set mdep 100 1 1 fuel 922350 102 922350 18 922380 102 922380 18
+                <br>
+                set mdep 100 1 1 clad 922350 102 922350 18 922380 102 922380 18
+                <br>
+                set mdep 100 1 1 water 92235 102 922350 18 922380 102 922380 18
+                <br>
+                <br>
+                <span style="color:purple;">% ----SPECTR---------------------------------------------------------</span>
+                <br>
+                <br>
+                ene eg1 1 0. 0.625E-6 20
+                <br>
+                det spectr_cell1
+                <br>
+                de eg1
+                <br>
+                dc cell1d
+                <br>
+                det spectr_cell2
+                <br>
+                de eg1
+                <br>
+                dc cell2d
+            </p>
+        </div>
+
+    {% endblock %}
+{% endblock %}
